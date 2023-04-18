@@ -1,0 +1,1 @@
+Base docker image for gravity-ui projects
