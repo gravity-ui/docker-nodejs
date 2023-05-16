@@ -46,14 +46,30 @@ To push new image to registry you need to do:
 
 `git checkout main`
 
-2. Build new image
+2. Login
+
+- Create [Personal Access Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) with permissions `read:packages` and `write:packages`
+
+- Save token to env variable:
+
+```bash
+export CR_PAT=<TOKEN>
+```
+
+- Login in registry:
+
+```bash
+echo $CR_PAT | docker login ghcr.io -u <USERNAME> --password-stdin
+```
+
+3. Build new image
 
 `docker build . --tag gravity-ui/node-nginx:latest`
 
-3. Tag image
+4. Tag image
 
 `docker image tag gravity-ui/node-nginx ghcr.io/gravity-ui/node-nginx:ubuntu20-nodejs18`
 
-4. Push image
+5. Push image
 
 `docker image push ghcr.io/gravity-ui/node-nginx:ubuntu20-nodejs18`
