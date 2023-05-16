@@ -59,7 +59,7 @@ export CR_PAT=<TOKEN>
 - Login in registry:
 
 ```bash
-echo $CR_PAT | docker login ghcr.io -u <USERNAME> --password-stdin
+echo $CR_PAT | docker login ghcr.io -u gravity-ui --password-stdin
 ```
 
 3. Build new image
