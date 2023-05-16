@@ -1,11 +1,11 @@
 
 # Docker nodejs
 
-Ubuntu based docker image with nginx and node.
+Ubuntu based docker image with nginx and nodejs.
 
 ## Usage example
 
-Example for node (next.js) project with nginx and supervisor 
+Example for nodejs project with nginx and supervisor 
 
 Add to your project `Docker` file with content:
 
@@ -27,7 +27,7 @@ COPY ./deploy/supervisor/ /etc/supervisor/conf.d
 
 RUN npm run build && \
     rm -rf deploy tests /tmp/* /root/.npm && \
-    chown app /opt/app/node_modules/.bin/next
+    chown app /opt/app/dist/run
 
 EXPOSE 80
 
