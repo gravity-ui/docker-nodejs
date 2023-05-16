@@ -5,7 +5,7 @@ Ubuntu based docker image with nginx and nodejs.
 
 ## Usage example
 
-Example for nodejs project with nginx and supervisor 
+Example for nodejs (next.js) project with nginx and supervisor 
 
 Add to your project `Docker` file with content:
 
