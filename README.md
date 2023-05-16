@@ -1,11 +1,11 @@
 
 # Docker nodejs
 
-Ubuntu based docker image with nginx and nodejs.
+Ubuntu based docker image with nginx and node.
 
 ## Usage example
 
-Example for nodejs (next.js) project with nginx and supervisor 
+Example for node (next.js) project with nginx and supervisor 
 
 Add to your project `Docker` file with content:
 
