@@ -7,7 +7,7 @@ Ubuntu based docker image with nginx and nodejs.
 
 Example for nodejs project with nginx and supervisor 
 
-Add to your project `Docker` file with content:
+Add to your project `Dockerfile` file with content:
 
 ```dockerfile
 FROM ghcr.io/gravity-ui/node-nginx:ubuntu20-nodejs18
