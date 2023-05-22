@@ -5,34 +5,7 @@ Ubuntu based docker image with nginx and nodejs.
 
 ## Usage example
 
-Example for nodejs project with nginx and supervisor 
-
-Add to your project `Dockerfile` file with content:
-
-```dockerfile
-FROM ghcr.io/gravity-ui/node-nginx:ubuntu20-nodejs18
-
-RUN mkdir -p /opt/app
-
-WORKDIR /opt/app
-
-COPY package.json package-lock.json /opt/app/
-
-RUN npm i -g npm@latest
-RUN npm ci
-
-COPY . .
-COPY ./deploy/nginx /etc/nginx
-COPY ./deploy/supervisor/ /etc/supervisor/conf.d
-
-RUN npm run build && \
-    rm -rf deploy tests /tmp/* /root/.npm && \
-    chown app /opt/app/dist/run
-
-EXPOSE 80
-
-CMD ["/usr/bin/supervisord"]
-```
+See example docker files in [examples folder](./examples).
 
 ## Push image to container registry
 
