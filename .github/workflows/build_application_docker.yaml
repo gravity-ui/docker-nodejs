@@ -1,0 +1,52 @@
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+name: Build Application Docker
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: gravity-ui/node-nginx
+  IMAGE_OS_NODE_VERSION: ubuntu20-nodejs18
+
+jobs:
+  build:
+    name: docker-nodejs
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: 'Get release build date'
+        run: |
+          BUILD_DATE=$(git log -1 --format=%cd --date=format:%Y-%m-%d)
+          echo "Release build date: ${BUILD_DATE}"
+          echo "BUILD_DATE=$BUILD_DATE" >> "$GITHUB_ENV"
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3.0.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract tags for Docker
+        id: meta
+        uses: docker/metadata-action@v5.0.0
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=${{ env.IMAGE_OS_NODE_VERSION }}
+            type=raw,value=${{ env.IMAGE_OS_NODE_VERSION }}.${{ env.BUILD_DATE }}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5.0.0
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
