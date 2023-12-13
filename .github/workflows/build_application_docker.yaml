@@ -37,17 +37,35 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Extract tags for Docker
+        id: meta-slim
+        uses: docker/metadata-action@v5.0.0
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-slim
+          tags: |
+            type=raw,value=${{ env.IMAGE_OS_NODE_VERSION }}
+            type=raw,value=${{ env.IMAGE_OS_NODE_VERSION }}.${{ env.BUILD_DATE }}
+      - name: Build and push Docker base slim image
+        uses: docker/build-push-action@v5.0.0
+        with:
+          context: 'Dockerfile.ubuntu20-nodejs18-slim'
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: ${{ steps.meta-slim.outputs.tags }}
+          labels: ${{ steps.meta-slim.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max  
+      - name: Extract tags for Docker
         id: meta
         uses: docker/metadata-action@v5.0.0
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=raw,value=${{ env.IMAGE_OS_NODE_VERSION }}
-            type=raw,value=${{ env.IMAGE_OS_NODE_VERSION }}.${{ env.BUILD_DATE }}
+            type=raw,value=${{ env.IMAGE_OS_NODE_VERSION }}.${{ env.BUILD_DATE }}    
       - name: Build and push Docker image
         uses: docker/build-push-action@v5.0.0
         with:
-          context: .
+          context: 'Dockerfile.ubuntu20-nodejs18'
           push: true
           platforms: linux/amd64,linux/arm64
           tags: ${{ steps.meta.outputs.tags }}
