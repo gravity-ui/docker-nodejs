@@ -13,7 +13,7 @@ RUN chmod +x /tmp/scripts/setup_18.x
 RUN /tmp/scripts/setup_18.x
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get -y install tzdata && \
-    apt-get -y install nano vim nginx curl git telnet bzip2 iproute2 wget supervisor nodejs
+    apt-get -y install nginx supervisor nodejs
 
 # cleanup tmp and defaults
 RUN rm -rf /etc/nginx/sites-enabled/default /var/lib/apt/lists/* /tmp/scripts
