@@ -95,7 +95,7 @@ jobs:
           build-args: |
             UBUNTU_VERSION=${{ env.UBUNTU_VERSION }}
             NODE_VERSION=${{ env.NODE_VERSION }}
-            ADDITIONAL_PACKAGES='nginx supervisor'
+            ADDITIONAL_PACKAGES=nginx supervisor
       - name: Build and push Docker with additional packages
         uses: docker/build-push-action@v6.0.0
         with:
@@ -109,4 +109,4 @@ jobs:
           build-args: |
             UBUNTU_VERSION=${{ env.UBUNTU_VERSION }}
             NODE_VERSION=${{ env.NODE_VERSION }}
-            ADDITIONAL_PACKAGES='nginx supervisor nano vim  curl git telnet bzip2 iproute2 wget'
+            ADDITIONAL_PACKAGES=nginx supervisor nano vim curl git telnet bzip2 iproute2 wget
