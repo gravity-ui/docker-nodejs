@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - main
-      - feat-only-node-image
   schedule:
     - cron:  '0 9 1,10,20,30 * *'
 
