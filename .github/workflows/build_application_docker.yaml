@@ -1,5 +1,11 @@
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+      - update-ubuntu-node
+  schedule:
+    - cron:  '0 9 1,10,20,30 * *'
 
 concurrency:
   group: ${{ github.workflow }}
@@ -10,7 +16,9 @@ name: Build Application Docker
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: gravity-ui/node-nginx
-  IMAGE_OS_NODE_VERSION: ubuntu20-nodejs18
+  NODE_VERSION: '20'
+  UBUNTU_VERSION: '22.04'
+  IMAGE_UBUNTU_NODE_VERSION: ubuntu22-nodejs20
 
 jobs:
   build:
@@ -42,10 +50,11 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,value=${{ env.IMAGE_OS_NODE_VERSION }}
-            type=raw,value=${{ env.IMAGE_OS_NODE_VERSION }}.${{ env.BUILD_DATE }}
+            type=raw,value=latest
+            type=raw,value=${{ env.IMAGE_UBUNTU_NODE_VERSION }}
+            type=raw,value=${{ env.IMAGE_UBUNTU_NODE_VERSION }}.${{ env.BUILD_DATE }}
       - name: Build and push Docker image
-        uses: docker/build-push-action@v5.0.0
+        uses: docker/build-push-action@v6.0.0
         with:
           context: .
           push: true
@@ -54,3 +63,6 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          build-args: |
+            UBUNTU_VERSION=${{ env.UBUNTU_VERSION }}
+            NODE_VERSION=${{ env.NODE_VERSION }}
