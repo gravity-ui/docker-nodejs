@@ -34,4 +34,4 @@ ENV NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/cert.pem
 RUN update-ca-certificates
 
 # users setting
-RUN useradd -m -u 1000 app && mkdir /opt/app && chown app:app /opt/app
+RUN useradd -r app && mkdir /opt/app && chown app:app /opt/app
