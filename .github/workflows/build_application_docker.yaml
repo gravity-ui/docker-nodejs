@@ -43,8 +43,8 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Extract tags for Docker
-        id: meta
+      - name: Extract tags for Docker only Node.js
+        id: meta-node
         uses: docker/metadata-action@v5.0.0
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
@@ -52,16 +52,60 @@ jobs:
             type=raw,value=latest
             type=raw,value=${{ env.IMAGE_UBUNTU_NODE_VERSION }}
             type=raw,value=${{ env.IMAGE_UBUNTU_NODE_VERSION }}.${{ env.BUILD_DATE }}
-      - name: Build and push Docker image
+      - name: Extract tags for Docker with Nginx and Node.js
+        id: meta-nginx
+        uses: docker/metadata-action@v5.0.0
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=${{ env.IMAGE_UBUNTU_NODE_VERSION }}-nginx
+            type=raw,value=${{ env.IMAGE_UBUNTU_NODE_VERSION }}-nginx.${{ env.BUILD_DATE }}
+      - name: Extract tags for Docker with additional packages
+        id: meta-full
+        uses: docker/metadata-action@v5.0.0
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=${{ env.IMAGE_UBUNTU_NODE_VERSION }}-full
+            type=raw,value=${{ env.IMAGE_UBUNTU_NODE_VERSION }}-full.${{ env.BUILD_DATE }}
+      - name: Build and push Docker only Node.js
         uses: docker/build-push-action@v6.0.0
         with:
           context: .
           push: true
           platforms: linux/amd64,linux/arm64
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta-node.outputs.tags }}
+          labels: ${{ steps.meta-node.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
             UBUNTU_VERSION=${{ env.UBUNTU_VERSION }}
             NODE_VERSION=${{ env.NODE_VERSION }}
+      - name: Build and push Docker with Nginx and Node.js
+        uses: docker/build-push-action@v6.0.0
+        with:
+          context: .
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: ${{ steps.meta-nginx.outputs.tags }}
+          labels: ${{ steps.meta-nginx.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            UBUNTU_VERSION=${{ env.UBUNTU_VERSION }}
+            NODE_VERSION=${{ env.NODE_VERSION }}
+            ADDITIONAL_PACKAGES=nginx supervisor
+      - name: Build and push Docker with additional packages
+        uses: docker/build-push-action@v6.0.0
+        with:
+          context: .
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: ${{ steps.meta-full.outputs.tags }}
+          labels: ${{ steps.meta-full.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            UBUNTU_VERSION=${{ env.UBUNTU_VERSION }}
+            NODE_VERSION=${{ env.NODE_VERSION }}
+            ADDITIONAL_PACKAGES=nginx supervisor nano vim curl git telnet bzip2 iproute2 wget
