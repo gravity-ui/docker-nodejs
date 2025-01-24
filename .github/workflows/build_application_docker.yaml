@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - main
-      - update-node-ubuntu
   schedule:
     - cron:  '0 9 1,10,20,30 * *'
 
